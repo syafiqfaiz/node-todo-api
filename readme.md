@@ -1,7 +1,7 @@
 # REST API built with ExpressJs
 
 Hi, this an application built during a NodeJs and ExpressJs training I delivered.
-It was and introduction to Node and Express.
+It was an introduction to Node and Express.
 
 We built a REST API with jwt authentication and Postgresql as persistance database.
 
