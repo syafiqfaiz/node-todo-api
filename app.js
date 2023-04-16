@@ -2,11 +2,13 @@ require('dotenv').config()
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cors = require('cors')
 const {attachRequestTime, myLogger} = require('./middlewares');
 const apiRouter = require('./apis')
 
 const PORT = process.env.PORT;
 
+app.use(cors())
 app.use(attachRequestTime)
 app.use(myLogger)
 app.use(bodyParser.json())
@@ -23,7 +25,6 @@ app.get('/shop', (req, res)=>{
 })
 
 app.use('/api', apiRouter)
-
 
 app.listen(PORT, ()=>{
   console.log(`app listening on port ${PORT}`);

@@ -10,7 +10,9 @@ router.get('/', (req, res) => {
       console.log('error', err);
       return
     }
-    res.json(result.rows)
+    const sorted = result.rows.sort((a, b)=>{return a.id - b.id})
+
+    res.json(sorted)
   })
   
 })
@@ -40,14 +42,19 @@ router.post('/', checkToken, async (req, res) => {
   }
 })
 
-// promise
-router.put('/:id', checkToken, (req, res) => {
+// async/await
+router.put('/:id', checkToken, async (req, res) => {
   const body = req.body;
   const id = req.params.id
 
-  Todos().updateItem(id, body)
-    .then( result => res.json(result.rows[0]))
-    .catch( err => console.log(err))
+  try {
+    const {rows} = await Todos().findById(id)
+    const result = await Todos().updateItem(id, {...rows[0], ...body})
+
+    res.json(result.rows[0])
+  } catch (err) {
+    console.log(err)
+  }
 })
 
 // promise
