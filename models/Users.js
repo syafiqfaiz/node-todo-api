@@ -14,10 +14,10 @@ const Users =  () => {
     jwt.sign({email, id}, TOKEN_SECRET, { expiresIn: '2 days' })
   )
 
-  const registerUser = async (email, password) => {
+  const registerUser = async (email, password, name) => {
     const hashedPassword = await saltAndHash(password)
 
-    return db.query('INSERT INTO users(email, hashed_password) values($1, $2) RETURNING *', [email, hashedPassword])
+    return db.query('INSERT INTO users(email, hashed_password, name) values($1, $2, $3) RETURNING *', [email, hashedPassword, name])
       .then(res => {
         return res.rows[0]
       })
@@ -46,7 +46,13 @@ const Users =  () => {
       .catch(err => console.log(err))
   )
 
-  return {registerUser, authenticateUser, findByEmail}
+  const findById = (id) =>(
+    db.query('SELECT * FROM users WHERE id=$1', [id])
+      .then(result => result.rows[0])
+      .catch(err => console.log(err))
+  )
+
+  return {registerUser, authenticateUser, findByEmail, findById}
 }
 
 module.exports = Users

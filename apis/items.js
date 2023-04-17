@@ -1,11 +1,12 @@
 const express = require('express')
 const router = express.Router()
 const Todos = require('../models/items')
+const User = require('../models/Users')
 const {checkToken} = require('../middlewares')
 
 router.get('/', (req, res) => {
   // using callback
-  Todos().getAll((err, result)=> {
+  Todos().getAll(req.query, (err, result)=> {
     if (err) {
       console.log('error', err);
       return
@@ -32,7 +33,12 @@ router.get('/:id', (req, res) => {
 router.post('/', checkToken, async (req, res) => {
   const body = req.body
   try {
-    const result = await Todos().createItem(body)
+    const user = await User().findById(req.curretUserId)
+    const result = await Todos().createItem({
+      ...body,
+      user_name: user.name,
+      user_id: user.id
+    })
 
     res.json(result.rows[0])
   } catch (error) {

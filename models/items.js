@@ -3,8 +3,15 @@ const client = require('../db')
 const Todos = () => {
   // we return nothing, but accept callback as argument
   // so when the request is done, we will run the callback
-  const getAll = (callback) =>{
-    client.query('SELECT * FROM todos', callback)
+  const getAll = (query, callback) =>{
+    let additionalQuery = '';
+
+    const queryKeys = Object.keys(query)
+    additionalQuery = queryKeys.map((key) => `${key}=${query[key]}`).join(' and ')
+    if (additionalQuery != '') {
+      additionalQuery = 'where ' + additionalQuery;
+    }
+    client.query(`SELECT * FROM todos ${additionalQuery}`, callback)
   }
 
   // for other functions, we return the promise function
@@ -12,11 +19,11 @@ const Todos = () => {
     client.query('SELECT * FROM todos WHERE id= $1',[id])
   )
   
-  const createItem = ({item}) => (
+  const createItem = ({item, user_id, user_name}) => (
     client
       .query(
-        'INSERT INTO todos(item, completed) VALUES($1, $2) RETURNING *',
-        [item, false]
+        'INSERT INTO todos(item, completed, user_id, user_name) VALUES($1, $2, $3, $4) RETURNING *',
+        [item, false, user_id, user_name]
       )
   )
 

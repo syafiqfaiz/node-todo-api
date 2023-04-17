@@ -3,8 +3,8 @@ const router = express.Router()
 const Users = require('../models/Users')
 
 router.post('/register', async (req, res) => {
-  const {email, password} = req.body;
-  const user = await Users().registerUser(email, password)
+  const {email, password, name} = req.body;
+  const user = await Users().registerUser(email, password, name)
 
   res.json({...user, hashed_password: null})
 })
