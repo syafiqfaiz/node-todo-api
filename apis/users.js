@@ -2,6 +2,21 @@ const express = require('express')
 const router = express.Router()
 const Users = require('../models/Users')
 
+
+router.get('/', async (req, res) => {
+  try {
+    const result = await Users().getAll()
+    const users = result.rows
+
+    res.json(users.map((user) => ({...user, hashed_password: undefined})))
+
+    return
+  } catch (err){
+
+    res.status(500).send(err)
+  }
+})
+
 router.post('/register', async (req, res) => {
   const {email, password, name} = req.body;
   const user = await Users().registerUser(email, password, name)

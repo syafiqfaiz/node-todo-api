@@ -52,7 +52,11 @@ const Users =  () => {
       .catch(err => console.log(err))
   )
 
-  return {registerUser, authenticateUser, findByEmail, findById}
+  const getAll = () => (
+    db.query('SELECT * FROM users')
+  )
+
+  return {registerUser, authenticateUser, findByEmail, findById, getAll}
 }
 
 module.exports = Users
